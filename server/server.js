@@ -22,6 +22,7 @@ const TodoDatabse=require('./model/Todo');
 app.use(bodyParser.json());
 
 app.get('/',(req,res)=>{
+    log
     res.send("Welcome Dhruv")
 })
 
@@ -61,10 +62,10 @@ app.get('/todo/:id',(req,res)=>{
         res.send(err.message)
     })
 })
-        
+const PORT=process.env.PORT || 3000;
 // listen on port
-app.listen(3000,()=>{
-    console.log('listen on port no 3000');
+app.listen(PORT,()=>{
+    console.log(`listen on port no ${PORT}`);
 })
 
 
