@@ -81,3 +81,46 @@ describe('GET /todo/:id',()=>{
     })
 })
 
+//test delete request Using MOCHA
+describe("delete request",()=>{
+    it("DELETE /todo/:id",(done)=>{
+        request(app)
+        .delete(`/todo/${todos[0]._id}`)
+        .expect(200)
+        .expect((res)=>{
+            expect(res.body.text).toBe(todos[0].text)
+        })
+        .end((err,res)=>{
+            if(err)
+            {
+                return done(err);
+            }
+            done();
+            // todoModel.findById(todos[0]._id).then((todo)=>{
+            //     // expect(todo).
+            // })
+        });
+    })
+})
+
+//test Update request Using MOCHA
+describe("update request",()=>{
+    it("PUT /todo/:id",(done)=>{
+        request(app)
+        .put(`/todo/${todos[0]._id}`)
+        .expect(200)
+        .expect((res)=>{
+            expect(res.body.text).toBe('Done');
+        })
+        .end((err,res)=>{
+            if(err)
+            {
+                return done(err);
+            }
+            done();
+            // todoModel.findById(todos[0]._id).then((todo)=>{
+            //     // expect(todo).
+            // })
+        });
+    })
+})

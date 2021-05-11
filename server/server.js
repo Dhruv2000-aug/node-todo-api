@@ -1,9 +1,22 @@
+const env=process.env.NODE_ENV || "development";
+console.log("***env",env);
+if(env==="development")
+{
+    process.env.PORT=3000;
+    process.env.MONGO_URI="mongodb+srv://dhruv:@Dhruv2000@cluster0.nt9p2.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+}
+else{
+    console.log("test mongo");
+    process.env.PORT=3000;
+    process.env.MONGO_URI="mongodb+srv://dhruv:@Dhruv2000@cluster0.nt9p2.mongodb.net/myFirstDatabaseTest?retryWrites=true&w=majority";
+}
+
 const express=require('express');
 const app=express();
 const dotenv=require('dotenv');
 const bodyParser=require('body-parser');
 var {ObjectID}=require('mongodb')
-
+const _=require('lodash');
 //config the env path
 dotenv.config({path:"config.env"});
 
@@ -22,7 +35,7 @@ const TodoDatabse=require('./model/Todo');
 app.use(bodyParser.json());
 
 app.get('/',(req,res)=>{
-    log
+    
     res.send("Welcome Dhruv")
 })
 
@@ -50,7 +63,7 @@ app.get('/todo',(req,res)=>{
 
 //get the single data id params
 app.get('/todo/:id',(req,res)=>{
-    const id=req.params.id;
+    var id=req.params.id;
     if(!ObjectID.isValid(id))
     {
         console.log("not valid this Id");
@@ -62,6 +75,45 @@ app.get('/todo/:id',(req,res)=>{
         res.send(err.message)
     })
 })
+
+//delete from todo api 
+app.delete('/todo/:id',(req,res)=>{
+    var id=req.params.id;
+    if(!ObjectID.isValid(id))
+    {
+        console.log("This id is not valid");
+    }
+
+    TodoDatabse.findByIdAndDelete(id).then((result)=>{
+        res.send(result)
+    }).catch(err=>{
+        res.status(404).send(err.message);
+    });
+})
+
+//update todo api
+app.put('/todo/:id',(req,res)=>{
+    var id=req.params.id;
+
+    var body=_.pick(req.body,['text','completed']);
+
+    // if(_.isBoolean(body.completed))
+    // {
+        body.text="Done";
+    // }
+
+    if(!ObjectID.isValid(id))
+    {
+        console.log("This id is not valid");
+    }
+
+    TodoDatabse.findByIdAndUpdate(id,{$set:body},{new:true}).then((result)=>{
+        res.send(result)
+    }).catch(err=>{
+        res.status(404).send(err.message);
+    });
+})
+
 const PORT=process.env.PORT || 3000;
 // listen on port
 app.listen(PORT,()=>{
